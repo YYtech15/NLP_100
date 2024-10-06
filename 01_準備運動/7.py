@@ -4,8 +4,9 @@
 # それぞれ, XとYとして求め，XとYの和集合，積集合，差集合を求めよ．
 # さらに，’se’というbi-gramがXおよびYに含まれるかどうかを調べよ．
 import re
+from typing import List
 
-def generate_n_grams(text, n, gram_type="word"):
+def generate_n_grams(text: str, n: int, gram_type: str="word") -> List[str]:
     """
     テキストからn-gramを生成する関数。
 
