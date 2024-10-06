@@ -29,7 +29,7 @@ expand -t 1 popular-names.txt > output.txt
 '''
 
 def replace_tab_with_space(file_name: str, output_file_name: str) -> None:
-    result = []
+    # result = []
     # with open(f"{file_name}.txt", "r") as lines:
     #     for line in lines:
     #         result.append(line.replace("\t", " "))
