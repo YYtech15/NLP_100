@@ -18,7 +18,6 @@ def generate_n_grams(text, n, gram_type="word"):
         n_grams = [words[i:i+n] for i in range(len(words) - n + 1)]
     elif gram_type == "char":
         chars = re.sub(r"[^\w]","",text)
-        print(chars)
         n_grams = [chars[i:i+n] for i in range(len(chars) - n + 1)]
     else:
         return "you select wrong gran_type"
