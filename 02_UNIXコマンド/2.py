@@ -35,11 +35,11 @@ def replace_tab_with_space(file_name: str, output_file_name: str) -> None:
     #         result.append(line.replace("\t", " "))
     # return "".join(result)
     
-    with open(f"{file_name}.txt", "r") as input_f:
+    with open(f"{file_name}.txt", "r") as input_f, \
+         open(f"{output_file_name}.txt", "w") as output_f:
     # 各行のタブをスペースに置換し、一つの文字列として返す
-        content = input_f.read().replace("\t", " ")
-    with open(f"{output_file_name}.txt", "w") as output_f:
-        output_f.write(content)
+         content = input_f.read().replace("\t", " ")
+         output_f.write(content)
 
 if __name__ == "__main__":
     file_name = "popular-names"
