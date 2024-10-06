@@ -4,9 +4,9 @@
 # それぞれ, XとYとして求め，XとYの和集合，積集合，差集合を求めよ．
 # さらに，’se’というbi-gramがXおよびYに含まれるかどうかを調べよ．
 import re
-from typing import List
+from typing import List, Tuple, Set
 
-def generate_n_grams(text: str, n: int, gram_type: str="word") -> List[str]:
+def generate_n_grams(text: str, n: int, gram_type: str = "word") -> List[str]:
     """
     テキストからn-gramを生成する関数。
 
@@ -16,17 +16,24 @@ def generate_n_grams(text: str, n: int, gram_type: str="word") -> List[str]:
     :return: n-gramのリスト
     """
     if gram_type == "word":
-        words = re.sub(r"[^\w\s]","",text).split()
+        words = re.sub(r"[^\w\s]", "", text).split()
         n_grams = [words[i:i+n] for i in range(len(words) - n + 1)]
     elif gram_type == "char":
-        chars = re.sub(r"[^\w]","",text)
+        chars = re.sub(r"[^\w]", "", text)
         n_grams = [chars[i:i+n] for i in range(len(chars) - n + 1)]
     else:
-        return "you select wrong gran_type"
+        return []
     return n_grams
 
-def set_operations(X, Y):
-    #　和集合
+def set_operations(X: Set[str], Y: Set[str]) -> Tuple[Set[str], Set[str], Set[str]]:
+    """
+    2つのセットの和集合、積集合、差集合を計算する関数。
+
+    :param X: 集合1
+    :param Y: 集合2
+    :return: 和集合、積集合、差集合のタプル
+    """
+    # 和集合
     union = X | Y
     # 積集合
     intersection = X & Y
@@ -35,7 +42,15 @@ def set_operations(X, Y):
     
     return union, intersection, difference
 
-def check_bigram(bigram, X, Y):
+def check_bigram(bigram: str, X: Set[str], Y: Set[str]) -> Tuple[bool, bool]:
+    """
+    文字bi-gramがXおよびYに含まれているかをチェックする関数。
+
+    :param bigram: チェックするbi-gram
+    :param X: 集合1
+    :param Y: 集合2
+    :return: bigramがXおよびYに含まれているかの結果をタプルで返す
+    """
     return bigram in X, bigram in Y
 
 if __name__ == "__main__":
@@ -43,8 +58,8 @@ if __name__ == "__main__":
     text_2 = "paragraph"
     
     # 文字bi-gram
-    X = set(generate_n_grams(text_1, 2, gram_type="char"))
-    Y = set(generate_n_grams(text_2, 2, gram_type="char"))
+    X: Set[str] = set(generate_n_grams(text_1, 2, gram_type="char"))
+    Y: Set[str] = set(generate_n_grams(text_2, 2, gram_type="char"))
     
     # 和集合, 積集合, 差集合を計算
     union, intersection, difference = set_operations(X, Y)
