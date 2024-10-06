@@ -33,7 +33,7 @@ def unique_first_column(file_name: str) -> None:
             first_column = line.split()[0]
             first_column_set.add(first_column)
 
-    with open("unique_first_column.txt", "w") as f:
+    with open(f"{file_name}_unique_first_column.txt", "w") as f:
         for value in sorted(first_column_set):
             f.write(value + "\n")
 
