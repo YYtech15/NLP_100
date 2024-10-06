@@ -16,10 +16,10 @@ import sys
 
 def print_head(file_name: str, N: int) -> None:
     with open(f"{file_name}.txt", "r") as f:
-        for i, line in enumerate(f):
-            if i >= N:
-                break
-            print(line, end="")
+        lines = f.readlines()  # ファイル全体をリストとして読み込む
+        head_lines = lines[:N]  # 最初からN行を取得
+        for line in head_lines:
+            print(line, end='')
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
