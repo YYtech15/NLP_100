@@ -7,7 +7,7 @@ import re
 def word_lengths(sentence):
     # words = sentence.replace(",","").replace(".","").split()
     # 正規表現で句読点をすべて削除
-    words = re.sub(r'[^\w\s]', '', sentence).split()
+    words = re.sub(r"[^\w\s]", "", sentence).split()
     return [len(word) for word in words]
 
 if __name__ == "__main__":
