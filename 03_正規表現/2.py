@@ -7,7 +7,7 @@ def extract_category_lines(file_name: str) -> List[str]:
         content = f.read()
 
     # 正規表現を使ってカテゴリ行を抽出
-    return [line for line in content.splitlines() if category_pattern.search(line)]
+    return category_pattern.findall(content)
 
 if __name__ == "__main__":
     file_name = "uk_article.txt"
