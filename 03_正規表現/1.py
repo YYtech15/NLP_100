@@ -5,26 +5,58 @@
 # 問題21-29では，ここで抽出した記事本文に対して実行せよ．
 import gzip
 import json
+from typing import Optional
 
-# "イギリス"に関する記事本文を探す関数
-def find_uk_article(file_path: str) -> None:
-    with gzip.open(file_path, "rt", encoding="utf-8") as f:
-        for line in f:
-            article = json.loads(line)
-            if article["title"] == "イギリス":
-                return article["text"]
+# Constants
+INPUT_FILE = "jawiki-country.json.gz"
+OUTPUT_FILE = "uk_article.txt"
+TARGET_TITLE = "イギリス"
+
+def find_article(file_path: str, target_title: str) -> Optional[str]:
+    """
+    Find an article with the specified title in the given gzipped JSON file.
+
+    Args:
+        file_path (str): Path to the gzipped JSON file.
+        target_title (str): Title of the article to find.
+
+    Returns:
+        Optional[str]: The text of the found article, or None if not found.
+    """
+    try:
+        with gzip.open(file_path, "rt", encoding="utf-8") as f:
+            for line in f:
+                article = json.loads(line)
+                if article["title"] == target_title:
+                    return article["text"]
+    except (IOError, json.JSONDecodeError) as e:
+        print(f"Error processing file {file_path}: {e}")
     return None
 
-if __name__ == "__main__":
-    # gzip圧縮されたファイルのパス
-    file_path = "jawiki-country.json.gz"
-    # イギリスの記事本文を取得して表示
-    uk_article = find_uk_article(file_path)
+def save_article(content: str, output_file: str) -> None:
+    """
+    Save the article content to a file.
 
-    if uk_article:
-        with open("uk_article.txt", "w", encoding="utf-8") as f:
-            f.write(uk_article)
-        print("イギリスに関する記事本文をuk_article.txtに保存しました。")
+    Args:
+        content (str): The content to save.
+        output_file (str): The path to the output file.
+    """
+    try:
+        with open(output_file, "w", encoding="utf-8") as f:
+            f.write(content)
+        print(f"Article saved to {output_file}")
+    except IOError as e:
+        print(f"Error saving article to {output_file}: {e}")
+
+def main() -> None:
+    """Main function to orchestrate the article extraction process."""
+    article_content = find_article(INPUT_FILE, TARGET_TITLE)
+
+    if article_content:
+        save_article(article_content, OUTPUT_FILE)
     else:
-        print("イギリスに関する記事が見つかりませんでした。")
+        print(f"No article found with title '{TARGET_TITLE}'.")
+
+if __name__ == "__main__":
+    main()
 

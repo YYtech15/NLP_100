@@ -1,47 +1,73 @@
-# 6.py
-# 25. テンプレートの抽出
-# 記事中に含まれる「基礎情報」テンプレートのフィールド名と値を抽出し，
-# 辞書オブジェクトとして格納せよ．
 import re
+from typing import Dict, Optional
 
-def extract_basic_info(file_name: str) -> dict:
-    basic_info = {}
+# Constants
+INPUT_FILE = 'uk_article.txt'
+OUTPUT_FILE = 'basic_info.txt'
+BASIC_INFO_PATTERN = re.compile(r'\{\{基礎情報.*?\n(.*?)\n\}\}', re.DOTALL)
+FIELD_PATTERN = re.compile(r'\|\s*(.*?)\s*=\s*(.*?)(?=\n\||\n$)', re.DOTALL)
+
+def extract_basic_info(content: str) -> Dict[str, str]:
+    """
+    Extract basic info from the given content.
+    
+    Args:
+        content (str): The content to extract basic info from.
+    
+    Returns:
+        Dict[str, str]: A dictionary containing the extracted basic info.
+    """
+    match = BASIC_INFO_PATTERN.search(content)
+    if not match:
+        return {}
+
+    basic_info_content = match.group(1)
+    fields = FIELD_PATTERN.findall(basic_info_content)
+
+    return {field_name.strip(): value.strip() for field_name, value in fields}
+
+def read_file(file_name: str) -> Optional[str]:
+    """
+    Read the content of a file.
+    
+    Args:
+        file_name (str): The name of the file to read.
+    
+    Returns:
+        Optional[str]: The content of the file, or None if the file is not found.
+    """
     try:
         with open(file_name, 'r', encoding='utf-8') as f:
-            content = f.read()
-
-        # 基礎情報テンプレートを抽出
-        # 通常、正規表現の . は改行文字にマッチしないが、re.DOTALL を付けることで . が改行文字にもマッチするようになる
-        basic_info_pattern = re.compile(r'\{\{基礎情報.*?\n(.*?)\n\}\}', re.DOTALL)
-        match = basic_info_pattern.search(content)
-        if not match:
-            print("No basic info template found.")
-            return basic_info
-
-        # 基礎情報テンプレートの内容
-        basic_info_content = match.group(1)
-
-        # フィールド名と値を抽出
-        # (?= ...) の使用
-        # 特定のパターンの後に続く文字列の存在をチェック可能だが、チェックした部分は結果に含まれない
-        fields = re.findall(r'\|\s*(.*?)\s*=\s*(.*?)(?=\n\||\n$)', basic_info_content, re.DOTALL)
-
-        for field_name, value in fields:
-            basic_info[field_name.strip()] = value.strip()
-
+            return f.read()
     except FileNotFoundError:
         print(f"Error: {file_name} not found.")
+        return None
 
-    return basic_info
+def write_output(data: Dict[str, str], output_file: str) -> None:
+    """
+    Write the extracted basic info to an output file.
+    
+    Args:
+        data (Dict[str, str]): The data to write.
+        output_file (str): The name of the output file.
+    """
+    with open(output_file, 'w', encoding='utf-8') as f:
+        for field_name, value in data.items():
+            f.write(f'{field_name}: {value}\n')
 
-if __name__ == '__main__':
-    file_name = 'uk_article.txt'
-    basic_info = extract_basic_info(file_name)
+def main() -> None:
+    """Main function to orchestrate the basic info extraction process."""
+    content = read_file(INPUT_FILE)
+    if content is None:
+        return
+
+    basic_info = extract_basic_info(content)
 
     if basic_info:
-        with open('basic_info.txt', 'w', encoding='utf-8') as f:
-            for field_name, value in basic_info.items():
-                f.write(f'{field_name}: {value}\n')
+        write_output(basic_info, OUTPUT_FILE)
         print(f"Extracted {len(basic_info)} fields from basic info template.")
     else:
-        print("No basic info found or an error occurred.")
+        print("No basic info found.")
+
+if __name__ == '__main__':
+    main()
