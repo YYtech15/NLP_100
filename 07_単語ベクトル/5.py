@@ -5,60 +5,13 @@
 # そのベクトルと類似度が最も高い単語と，その類似度を求めよ．
 # 求めた単語と類似度は，各事例の末尾に追記せよ．
 import re
-import gensim
 import logging
-import numpy as np
-from pathlib import Path
-from typing import List, Tuple, Optional
+import seven_lib
+from typing import List
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-class WordVectorManager:
-    def __init__(self, model_path: str):
-        self.model_path = Path(model_path)
-        self.model: Optional[gensim.models.KeyedVectors] = None
-
-    def load_model(self) -> None:
-        if not self.model_path.exists():
-            raise FileNotFoundError(f"モデルファイルが見つかりません: {self.model_path}")
-
-        logging.info(f"モデルを読み込んでいます: {self.model_path}")
-        self.model = gensim.models.KeyedVectors.load_word2vec_format(str(self.model_path), binary=True)
-        logging.info("モデルの読み込みが完了しました")
-
-    def get_word_vector(self, word: str) -> Optional[np.ndarray]:
-        if self.model is None:
-            raise ValueError("モデルが読み込まれていません")
-
-        try:
-            return self.model[word]
-        except KeyError:
-            logging.warning(f"単語 '{word}' はモデル内に存在しません")
-            return None
-
-    def get_most_similar(self, vector: np.ndarray, topn: int = 1) -> List[Tuple[str, float]]:
-        if self.model is None:
-            raise ValueError("モデルが読み込まれていません")
-
-        return self.model.similar_by_vector(vector, topn=topn)
-
-    def analogy(self, word1: str, word2: str, word3: str) -> Tuple[Optional[str], Optional[float]]:
-        vec1 = self.get_word_vector(word1)
-        vec2 = self.get_word_vector(word2)
-        vec3 = self.get_word_vector(word3)
-
-        if vec1 is None or vec2 is None or vec3 is None:
-            return None, None
-
-        result_vector = vec2 - vec1 + vec3
-        most_similar = self.get_most_similar(result_vector)
-        
-        if most_similar:
-            return most_similar[0]
-        else:
-            return None, None
-
-def process_analogy_file(file_path: str, manager: WordVectorManager) -> List[str]:
+def process_analogy_file(file_path: str, manager: seven_lib.WordVectorManager) -> List[str]:
     '''
     Process the analogy file and return the results.
     
@@ -112,7 +65,7 @@ def main():
     analogy_file_path = "data/questions-words.txt"
     output_file_path = "ans64.txt"
 
-    manager = WordVectorManager(model_path)
+    manager = seven_lib.WordVectorManager(model_path)
 
     try:
         manager.load_model()
