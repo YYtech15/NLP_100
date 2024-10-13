@@ -10,9 +10,10 @@ from typing import List, Tuple
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def main() -> None:
-    model_path = "data/GoogleNews-vectors-negative300.bin"
+    compressed_path = "data/GoogleNews-vectors-negative300.bin.gz"
+    decompressed_path = "data/GoogleNews-vectors-negative300.bin"
 
-    manager = seven_lib.WordVectorManager(model_path)
+    manager = seven_lib.WordVectorManager(compressed_path, decompressed_path)
 
     try:
         manager.load_model()

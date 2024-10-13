@@ -2,17 +2,18 @@
 # 61. 単語の類似度
 # “United States”と”U.S.”のコサイン類似度を計算せよ．
 import logging
-from typing import Optional
 import seven_lib
+from typing import Optional
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def main() -> None:
-    model_path = "data/GoogleNews-vectors-negative300.bin"
+    compressed_path = "data/GoogleNews-vectors-negative300.bin.gz"
+    decompressed_path = "data/GoogleNews-vectors-negative300.bin"
     word1 = "United_States"
     word2 = "U.S."
 
-    manager = seven_lib.WordVectorManager(model_path)
+    manager = seven_lib.WordVectorManager(compressed_path, decompressed_path)
 
     try:
         manager.load_model()

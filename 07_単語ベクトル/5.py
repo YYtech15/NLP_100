@@ -61,11 +61,12 @@ def process_analogy_file(file_path: str, manager: seven_lib.WordVectorManager) -
     return results
 
 def main():
-    model_path = "data/GoogleNews-vectors-negative300.bin"
+    compressed_path = "data/GoogleNews-vectors-negative300.bin.gz"
+    decompressed_path = "data/GoogleNews-vectors-negative300.bin"
     analogy_file_path = "data/questions-words.txt"
     output_file_path = "ans64.txt"
 
-    manager = seven_lib.WordVectorManager(model_path)
+    manager = seven_lib.WordVectorManager(compressed_path, decompressed_path)
 
     try:
         manager.load_model()
