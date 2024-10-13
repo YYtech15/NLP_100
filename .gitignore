@@ -2,3 +2,4 @@ env/
 data/
 ans*.txt
 *explain*.md
+__pychache__/
